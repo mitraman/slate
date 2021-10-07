@@ -1,109 +1,123 @@
 # Transactions
 
-Use the `balances` endpoint to retrieve with balances associated with an authenticated user's bank accounts
+Use the `transactions` endpoint to retrieve a list of transactions associated with an authenticated customer.
 
-## Retrieve the Balance for a specific Bank Account
+## Transactions Data Model
+
+TBD
+
+## Get all transactions
+
+```shell
+curl "http://example.com/api/transactions" \
+  -H "Authorization: Bearer token"
+```
+
+> The above command returns a list of transactions in a JSON collection:
+
+```json
+HTTP 200 OK
+
+{
+  "_links": {
+    "self": { "href": "" },
+    "next": { "href": "http://api.publicissapient.com/baas/transactions?from=100821&to=" },
+    "prev": { "href": "http://api.publicissapient.com/baas/transactions?" },
+  },
+  "Transactions": [
+       {
+        "AccountId": "22289",
+        "TransactionId": "123",
+        "TransactionReference": "Ref 1",
+        "Amount": {
+          "Amount": "10.00",
+          "Currency": "GBP"
+        },
+        "CreditDebitIndicator": "Credit",
+        "Status": "Booked",
+        "BookingDateTime": "2017-04-05T10:43:07+00:00",
+        "ValueDateTime": "2017-04-05T10:45:22+00:00",
+        "TransactionInformation": "Cash from Aubrey",
+        "BankTransactionCode": {
+          "Code": "ReceivedCreditTransfer",
+          "SubCode": "DomesticCreditTransfer"
+        },
+        "ProprietaryBankTransactionCode": {
+          "Code": "Transfer",
+          "Issuer": "AlphaBank"
+        },
+        "Balance": {
+          "Amount": {
+            "Amount": "230.00",
+            "Currency": "GBP"
+          },
+          "CreditDebitIndicator": "Credit",
+          "Type": "InterimBooked"
+        }
+      }
+  ],
+  "Meta": {
+  } 
+}
+```
+
+### HTTP Request
+
+`GET http://api.publicissapient.com/transactions`
+
+
+## Filter the list
+
+Filter the list with query parameters
+
+### HTTP Request
+
+`GET http://api.publicissapient.com/transactions`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+fromDateTime |  | the starting date-time for transactions to list in the response
+toDateTime |  | the ending date-time for transactions to list in the response
+reference | '' | text to search for in transaction reference data
+
+
+## Search for a transaction
 
 ```shell
 curl "http://example.com/api/accounts/22289/balance" \
   -H "Authorization: Bearer token"
 ```
 
-> The above command returns a list of accounts as an array:
+```shell
+curl -X POST https://api.publicissapient.com/transactions/search \
+-H 'Content-Type: application/json' \
+-d '{
+  "start_date": "2018-01-01",
+  "end_date": "2018-02-01",
+  "reference": "",
+  "amount": {
+    "min": "10.00",
+    "max": "100.00"
+  }
+}'
+```
+
+> The above command returns a list of transactions as an array:
 
 ```json
 HTTP 200 OK
 
 {
-  "Balances": [
-      {
-        "AccountId": "22289",
-        "Amount": {
-          "Amount": "1230.00",
-          "Currency": "GBP"
-        },
-        "CreditDebitIndicator": "Credit",
-        "Type": "InterimAvailable",
-        "DateTime": "2017-04-05T10:43:07+00:00",
-        "CreditLine": [
-          {
-            "Included": true,
-            "Amount": {
-              "Amount": "1000.00",
-              "Currency": "GBP"
-            },
-            "Type": "Pre-Agreed"
-          }
-        ]
-      }
-    ] 
+ 
 }
 ```
 
-> If the bank account that has been specified cannot be retrieved, the API will return a 404 error message:
 
-```json
-HTTP 404 NOT FOUND
-
-{
-  "Accounts" : []    
-}
-```
-
-This endpoint retrieves a list of bank accounts for an authenticated user. Every item in the resulting array is a complete representation of an account (i.e. there is no need to make a subsequent GET call to retrieve additional account information details.)
+This endpoint retrieves a list of transactions for an authenticated user based on the POSTed search request. 
 
 ### HTTP Request
 
-`GET http://example.com/api/accounts/{AccountID}/balance`
+`POST http://api.publicissapient.com/transactions/search`
 
-## Retrieve all Account Balances
-
-```shell
-curl "http://example.com/api/balances" \
-  -H "Authorization: Bearer token"
-```
-
-> The above command returns an array of balances for all bank accounts associated with the signed in user
-
-```json
-{
-  "Balances" : [
-      {
-        "AccountId": "22289",
-        "Amount": {
-          "Amount": "1230.00",
-          "Currency": "GBP"
-        },
-        "CreditDebitIndicator": "Credit",
-        "Type": "InterimAvailable",
-        "DateTime": "2017-04-05T10:43:07+00:00",
-        "CreditLine": [
-          {
-            "Included": true,
-            "Amount": {
-              "Amount": "1000.00",
-              "Currency": "GBP"
-            },
-            "Type": "Pre-Agreed"
-          }
-        ]
-      },
-      {
-        "AccountId": "31820",
-        "Amount": {
-          "Amount": "57.36",
-          "Currency": "GBP"
-        },
-        "CreditDebitIndicator": "Debit",
-        "Type": "InterimBooked",
-        "DateTime": "2017-05-02T14:22:09+00:00"
-      }
-    ] 
-}
-```
-
-This endpoint retrieves the bank account identified in the URI
-
-### HTTP Request
-
-`GET http://example.com/api/balances`

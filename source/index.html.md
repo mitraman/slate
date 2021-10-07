@@ -10,12 +10,10 @@ toc_footers:
 
 includes:
   - accounts
-  - lending
-  - customer_onboarding
+  - pots
   - balances
   - transactions
   - pfm
-  - errors
 
 search: true
 

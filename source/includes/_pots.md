@@ -1,4 +1,4 @@
-# Reports
+# Pots
 
 Flexible expense reporting functionality with extensive filtering capabilities (meniga)
 
@@ -101,6 +101,8 @@ A calculated estimate of when the savings goal will be met
 *array*
 
 An array of time series data that plots the historical progress towards a goal within a time range
+
+
  
 ## Create a new goal
 
@@ -401,3 +403,4 @@ This endpoint retrieves the bank account identified in the URI
 
 ## Update a budget
 
+## Retrieve loan products
